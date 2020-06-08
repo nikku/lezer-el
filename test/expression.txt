@@ -1,0 +1,218 @@
+# Expressions
+
+${1}
+#{1}
+${'hello'}
+${"hello"}
+${book}
+${customer.name}
+${func(a, b)(c)}
+${employee.getName()}
+${exprA.identifierB}
+${exprA["identifierB"]}
+${exprA["identifierB"]()}
+
+==>
+
+Script()
+
+
+## Arithmetic Operators
+
+${a+b}
+${a-b}
+${a*b}
+${a/b}
+${a div b}
+${a%b}
+${a mod b}
+${-a}
+
+==>
+
+Script()
+
+
+## String Concatenation Operator
+
+${a+=b}
+
+==>
+
+Script()
+
+
+## Relational Operators
+
+${a==b}
+${a eq b}
+${a!=b}
+${a ne b}
+${a<b}
+${a lt b}
+${a>b}
+${a gt b}
+${a<=b}
+${a le b}
+${a>=b}
+${a ge b}
+
+==>
+
+Script()
+
+
+## Logical Operators
+
+${a&&b}
+${a and b}
+${a||b}
+${a or b}
+${!a}
+
+==>
+
+Script()
+
+
+## Empty Operator
+
+${ empty a }
+
+==>
+
+Script()
+
+
+## Conditional Operator
+
+${ a ? b : c }
+
+==>
+
+Script()
+
+
+## Assignment Operator
+
+${ a = b }
+
+==>
+
+Script()
+
+
+## Semicolon Operator
+
+${ a; b }
+
+==>
+
+Script()
+
+
+## Parentheses
+
+${(a*(b+c))}
+
+==>
+
+Script();
+
+
+## Functions
+
+${foo()}
+${foo(a, b)}
+${ns:foo()}
+
+==>
+
+Script();
+
+
+## Lambda Expressions
+
+${x->x+1}
+${(x,y)->x+y}
+${()->64}
+${x->x+1}
+${((x,y)->x+y)(3,4)}
+${v = x->x+1}
+${x-> (a=x)}
+${x-> c?x+1:x+2}
+
+==>
+
+Script();
+
+## Functions
+
+${foo()}
+${foo(a, b)}
+${ns:foo()}
+
+==>
+
+Script();
+
+
+## Sets
+
+${{a, 1, b}}
+
+==>
+
+Script();
+
+
+## Lists
+
+${[]}
+${[a, 1, b]}
+
+
+==>
+
+Script();
+
+
+## Maps
+
+${{ "a": 1, b: b }}
+${{"one":1, "two":2, "three":3}}
+
+
+==>
+
+Script();
+
+
+## Scripts
+
+${fact = n -> n==0? 1: n*fact(n-1); fact(5)}
+${employees.where(e->e.firstName == 'Bob')}
+${customers.select(c->[c.name, c.orders.sum(o->o.total)])}
+${books.stream().filter(b->b.category == ‘history’)
+ .map(b->b.title)
+ .toList()}
+
+
+==>
+
+Script();
+
+
+# Literals
+
+true
+false
+null
+1
+-10
+\${1}
+\#{1}
+
+==>
+
+Script()
