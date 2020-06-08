@@ -212,10 +212,6 @@ Number {
 
   @precedence { text, whitespace }
 
-  @precedence { word, whitespace }
-
-  @precedence { identifier, word }
-
   @precedence { identifier, text }
 
   @precedence { numeric, text }
