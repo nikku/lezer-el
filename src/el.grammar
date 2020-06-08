@@ -1,0 +1,257 @@
+@precedence {
+  else @left,
+  member,
+  newArgs,
+  call,
+  prefix,
+  exp @left,
+  times @left,
+  plus @left,
+  concat @left,
+  rel @left,
+  equal @left,
+  and @left,
+  or @left,
+  ternary @left,
+  assign @left,
+  comma @left,
+  statement @cut
+}
+
+@top Script {
+  (literalStatement | evalStatement)+
+}
+
+literalStatement {
+  NumericLiteral[name="Number"] { minus? numeric } |
+  boolean |
+  kw<"null"> |
+  Text
+}
+
+Text {
+  identifier | text
+}
+
+evalStatement {
+  (dollar | "#") "{" statements "}"
+}
+
+statements {
+  ExpressionStatement (semi ExpressionStatement)*
+}
+
+ExpressionStatement {
+  expression
+}
+
+ParamList {
+  "(" commaSep<VariableDefinition> ")"
+}
+
+Block {
+  !statement "{" statements? "}"
+}
+
+expression {
+  expressionNoComma | SequenceExpression
+}
+
+SequenceExpression {
+  expressionNoComma !comma ("," expressionNoComma)+
+}
+
+expressionNoComma {
+  Number |
+  String |
+  VariableName |
+  boolean |
+  kw<"null"> |
+  ObjectExpression { "{" commaSep<Property> ~destructure "}" } |
+  SetExpression { "{" expression ~destructure "}" } |
+  ArrayExpression { "[" expression? ~destructure "]" } |
+  NewExpression |
+  UnaryExpression |
+  EmptyExpression |
+  ParenthesizedExpression |
+  ArrowFunction |
+  MemberExpression |
+  BinaryExpression |
+  ConditionalExpression { expressionNoComma !ternary LogicOp<"?"> expressionNoComma LogicOp<":"> expressionNoComma } |
+  AssignmentExpression |
+  CallExpression { expressionNoComma !call ArgList }
+}
+
+ParenthesizedExpression { "(" expression ")" }
+
+propName { PropertyNameDefinition | "[" expression "]" | Number | String }
+
+Property {
+  propName ~destructure ":" expressionNoComma
+}
+
+NewExpression {
+  kw<"new"> expressionNoComma (!newArgs ArgList)?
+}
+
+EmptyExpression {
+  !prefix ckw<"empty"> expressionNoComma
+}
+
+UnaryExpression {
+  !prefix (LogicOp<"!"> | not | ArithOp<"+" | "-">)
+  expressionNoComma
+}
+
+BinaryExpression {
+  expressionNoComma !exp ArithOp<"**"> expressionNoComma |
+  expressionNoComma !times (divide | ArithOp<"%"> | ArithOp<"*"> | div | mod ) expressionNoComma |
+  expressionNoComma !plus ArithOp<"+" | "-"> expressionNoComma |
+  expressionNoComma !rel (CompareOp<"<" "="? | ">" "="?> | gt | ge | lt | le) expressionNoComma |
+  expressionNoComma !equal (CompareOp<"==" | "!="> | eq | ne) expressionNoComma |
+  expressionNoComma !and (LogicOp<"&&"> | and) expressionNoComma |
+  expressionNoComma !concat (ArithOp<"+=">) expressionNoComma |
+  expressionNoComma !or (LogicOp<"||"> | or) expressionNoComma
+}
+
+AssignmentExpression {
+  (VariableName | MemberExpression) !assign "=" expressionNoComma
+}
+
+MemberExpression {
+  expressionNoComma !member ("." PropertyName | "[" expression "]")
+}
+
+ArgList {
+  "(" commaSep<expressionNoComma> ")"
+}
+
+ArrowFunction {
+  (ParamList | ParamList { VariableDefinition }) "->" (Block | expression)
+}
+
+commaSep<content> {
+  "" | content ("," content?)*
+}
+
+commaSep1<content> {
+  content ("," content)*
+}
+
+// Keywords
+
+kw<term> { @specialize[name={term}]<identifier, term> }
+
+// Contextual keywords
+
+ckw<term> { @extend[name={term}]<identifier, term> }
+
+semi { ";" }
+
+dollar { kw<"$"> }
+
+boolean { @specialize[name=BooleanLiteral]<identifier, "true" | "false"> }
+
+div { @specialize[name=ArithOp]<identifier, "div"> }
+mod { @specialize[name=ArithOp]<identifier, "mod"> }
+
+not { @specialize[name=LogicOp]<identifier, "not"> }
+and { @specialize[name=LogicOp]<identifier, "and"> }
+or { @specialize[name=LogicOp]<identifier, "or"> }
+
+eq { @specialize[name=CompareOp]<identifier, "eq"> }
+ne { @specialize[name=CompareOp]<identifier, "ne"> }
+
+gt { @specialize[name=CompareOp]<identifier, "gt"> }
+ge { @specialize[name=CompareOp]<identifier, "ge"> }
+lt { @specialize[name=CompareOp]<identifier, "lt"> }
+le { @specialize[name=CompareOp]<identifier, "le"> }
+
+VariableName { identifier ~arrow }
+
+VariableDefinition { identifier ~arrow }
+
+PropertyName { identifier }
+
+PropertyNameDefinition { identifier }
+
+Number {
+  numeric
+}
+
+@skip { whitespace | LineComment | BlockComment }
+
+@tokens {
+  whitespace { std.whitespace+ }
+
+  LineComment { "//" ![\n]* }
+
+  BlockComment { "/*" blockCommentRest }
+
+  blockCommentRest { ![*] blockCommentRest | "*" blockCommentAfterStar }
+
+  blockCommentAfterStar { "/" | "*" blockCommentAfterStar | ![/*] blockCommentRest }
+
+  divide[name=ArithOp] { "/" }
+
+  @precedence { BlockComment, LineComment, divide }
+
+  @precedence { BlockComment, LineComment }
+
+  @precedence { BlockComment, text }
+
+  @precedence { LineComment, text }
+
+  identifierChar { std.asciiLetter | $[_$\u{a1}-\u{10ffff}] }
+
+  word { identifierChar (identifierChar | std.digit)* }
+
+  identifier { word }
+
+  @precedence { identifier, whitespace }
+
+  @precedence { text, whitespace }
+
+  @precedence { word, whitespace }
+
+  @precedence { identifier, word }
+
+  @precedence { identifier, text }
+
+  @precedence { numeric, text }
+
+  @precedence { minus, text }
+
+  numeric {
+    (std.digit+ ("." std.digit*)? | "." std.digit+) (("e" | "E") ("+" | "-")? std.digit+)? |
+    "0x" (std.digit | $[a-fA-F])+ |
+    "0b" $[01]+ |
+    "0o" $[0-7]+
+  }
+
+  String {
+    '"' (![\\\n"] | "\\" _)* '"'? |
+    "'" (![\\\n'] | "\\" _)* "'"?
+  }
+
+  text {
+    (![$# \n])+
+  }
+
+  minus { "-" }
+
+  ArithOp<expr> { expr }
+  LogicOp<expr> { expr }
+  CompareOp<expr> { expr }
+
+  "="[name=Equals]
+  "->"[name=Arrow]
+
+  "(" ")" "[" "]" "{" "}"
+
+  "." "," ";" ":"
+
+  "#" "$"
+}
+
+@detectDelim

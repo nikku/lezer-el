@@ -14,10 +14,10 @@ ${exprA["identifierB"]()}
 
 ==>
 
-Script()
+Script("$","{",ExpressionStatement(Number),"}","#","{",ExpressionStatement(Number),"}","$","{",ExpressionStatement(String),"}","$","{",ExpressionStatement(String),"}","$","{",ExpressionStatement(VariableName),"}","$","{",ExpressionStatement(MemberExpression(VariableName,".",PropertyName)),"}","$","{",ExpressionStatement(CallExpression(CallExpression(VariableName,ArgList("(",VariableName,",",VariableName,")")),ArgList("(",VariableName,")"))),"}","$","{",ExpressionStatement(CallExpression(MemberExpression(VariableName,".",PropertyName),ArgList("(",")"))),"}","$","{",ExpressionStatement(MemberExpression(VariableName,".",PropertyName)),"}","$","{",ExpressionStatement(MemberExpression(VariableName,"[",String,"]")),"}","$","{",ExpressionStatement(CallExpression(MemberExpression(VariableName,"[",String,"]"),ArgList("(",")"))),"}")
 
 
-## Arithmetic Operators
+# Arithmetic Operators
 
 ${a+b}
 ${a-b}
@@ -30,19 +30,19 @@ ${-a}
 
 ==>
 
-Script()
+Script("$","{",ExpressionStatement(BinaryExpression(VariableName,ArithOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,ArithOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,ArithOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,ArithOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,ArithOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,ArithOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,ArithOp,VariableName)),"}","$","{",ExpressionStatement(UnaryExpression(ArithOp,VariableName)),"}")
 
 
-## String Concatenation Operator
+# String Concatenation Operator
 
 ${a+=b}
 
 ==>
 
-Script()
+Script("$","{",ExpressionStatement(BinaryExpression(VariableName,ArithOp,VariableName)),"}")
 
 
-## Relational Operators
+# Relational Operators
 
 ${a==b}
 ${a eq b}
@@ -59,10 +59,10 @@ ${a ge b}
 
 ==>
 
-Script()
+Script("$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,CompareOp,VariableName)),"}")
 
 
-## Logical Operators
+# Logical Operators
 
 ${a&&b}
 ${a and b}
@@ -72,101 +72,94 @@ ${!a}
 
 ==>
 
-Script()
+Script("$","{",ExpressionStatement(BinaryExpression(VariableName,LogicOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,LogicOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,LogicOp,VariableName)),"}","$","{",ExpressionStatement(BinaryExpression(VariableName,LogicOp,VariableName)),"}","$","{",ExpressionStatement(UnaryExpression(LogicOp,VariableName)),"}")
 
 
-## Empty Operator
+# Empty Operator
 
 ${ empty a }
 
 ==>
 
-Script()
+Script("$","{",ExpressionStatement(EmptyExpression(empty,VariableName)),"}")
 
 
-## Conditional Operator
+# Conditional Operator
 
 ${ a ? b : c }
 
 ==>
 
-Script()
+Script("$","{",ExpressionStatement(ConditionalExpression(VariableName,LogicOp,VariableName,LogicOp,VariableName)),"}")
 
 
-## Assignment Operator
+# Assignment Operator
 
 ${ a = b }
 
 ==>
 
-Script()
+Script("$","{",ExpressionStatement(AssignmentExpression(VariableName,Equals,VariableName)),"}")
 
 
-## Semicolon Operator
+# Semicolon Operator
 
 ${ a; b }
 
 ==>
 
-Script()
+Script("$","{",ExpressionStatement(VariableName),";",ExpressionStatement(VariableName),"}")
 
 
-## Parentheses
+# Parentheses
 
 ${(a*(b+c))}
 
 ==>
 
-Script();
+Script("$","{",ExpressionStatement(ParenthesizedExpression("(",BinaryExpression(VariableName,ArithOp,ParenthesizedExpression("(",BinaryExpression(VariableName,ArithOp,VariableName),")")),")")),"}")
 
 
-## Functions
+# Functions
 
 ${foo()}
 ${foo(a, b)}
-${ns:foo()}
 
 ==>
 
-Script();
+Script("$","{",ExpressionStatement(CallExpression(VariableName,ArgList("(",")"))),"}","$","{",ExpressionStatement(CallExpression(VariableName,ArgList("(",VariableName,",",VariableName,")"))),"}")
 
 
-## Lambda Expressions
+# Lambda Expressions
+
 
 ${x->x+1}
-${(x,y)->x+y}
-${()->64}
-${x->x+1}
-${((x,y)->x+y)(3,4)}
-${v = x->x+1}
 ${x-> (a=x)}
 ${x-> c?x+1:x+2}
 
-==>
+${()->64}
+${(x,y)->x+y}
+${((x,y)->x+y)(3,4)}
 
-Script();
+${v = x->x+1}
 
-## Functions
-
-${foo()}
-${foo(a, b)}
-${ns:foo()}
+${a -> { b = a + 1; b - 10 }}
 
 ==>
 
-Script();
+Script("$","{",ExpressionStatement(ArrowFunction(ParamList(VariableDefinition),Arrow,BinaryExpression(VariableName,ArithOp,Number))),"}","$","{",ExpressionStatement(ArrowFunction(ParamList(VariableDefinition),Arrow,ParenthesizedExpression("(",AssignmentExpression(VariableName,Equals,VariableName),")"))),"}","$","{",ExpressionStatement(ArrowFunction(ParamList(VariableDefinition),Arrow,ConditionalExpression(VariableName,LogicOp,BinaryExpression(VariableName,ArithOp,Number),LogicOp,BinaryExpression(VariableName,ArithOp,Number)))),"}","$","{",ExpressionStatement(ArrowFunction(ParamList("(",")"),Arrow,Number)),"}","$","{",ExpressionStatement(ArrowFunction(ParamList("(",VariableDefinition,",",VariableDefinition,")"),Arrow,BinaryExpression(VariableName,ArithOp,VariableName))),"}","$","{",ExpressionStatement(CallExpression(ParenthesizedExpression("(",ArrowFunction(ParamList("(",VariableDefinition,",",VariableDefinition,")"),Arrow,BinaryExpression(VariableName,ArithOp,VariableName)),")"),ArgList("(",Number,",",Number,")"))),"}","$","{",ExpressionStatement(AssignmentExpression(VariableName,Equals,ArrowFunction(ParamList(VariableDefinition),Arrow,BinaryExpression(VariableName,ArithOp,Number)))),"}","$","{",ExpressionStatement(ArrowFunction(ParamList(VariableDefinition),Arrow,Block("{",ExpressionStatement(AssignmentExpression(VariableName,Equals,BinaryExpression(VariableName,ArithOp,Number))),";",ExpressionStatement(BinaryExpression(VariableName,ArithOp,Number)),"}"))),"}")
 
 
-## Sets
+# Sets
 
 ${{a, 1, b}}
 
 ==>
 
-Script();
+Script("$","{",ExpressionStatement(SetExpression("{",SequenceExpression(VariableName,",",Number,",",VariableName),"}")),"}")
 
 
-## Lists
+# Lists
 
 ${[]}
 ${[a, 1, b]}
@@ -174,22 +167,24 @@ ${[a, 1, b]}
 
 ==>
 
-Script();
+Script("$","{",ExpressionStatement(ArrayExpression("[","]")),"}","$","{",ExpressionStatement(ArrayExpression("[",SequenceExpression(VariableName,",",Number,",",VariableName),"]")),"}")
 
 
-## Maps
+# Maps
 
+${{}}
 ${{ "a": 1, b: b }}
 ${{"one":1, "two":2, "three":3}}
 
 
 ==>
 
-Script();
+Script("$","{",ExpressionStatement(ObjectExpression("{","}")),"}","$","{",ExpressionStatement(ObjectExpression("{",Property(String,":",Number),",",Property(PropertyNameDefinition,":",VariableName),"}")),"}","$","{",ExpressionStatement(ObjectExpression("{",Property(String,":",Number),",",Property(String,":",Number),",",Property(String,":",Number),"}")),"}")
 
 
-## Scripts
+# Scripts
 
+12 12 true falseasdfalse 12ta ${a}
 ${fact = n -> n==0? 1: n*fact(n-1); fact(5)}
 ${employees.where(e->e.firstName == 'Bob')}
 ${customers.select(c->[c.name, c.orders.sum(o->o.total)])}
@@ -200,7 +195,7 @@ ${books.stream().filter(b->b.category == ‘history’)
 
 ==>
 
-Script();
+Script(Number,Number,BooleanLiteral,Text,Number,Text,"$","{",ExpressionStatement(VariableName),"}","$","{",ExpressionStatement(AssignmentExpression(VariableName,Equals,ArrowFunction(ParamList(VariableDefinition),Arrow,ConditionalExpression(BinaryExpression(VariableName,CompareOp,Number),LogicOp,Number,LogicOp,BinaryExpression(VariableName,ArithOp,CallExpression(VariableName,ArgList("(",BinaryExpression(VariableName,ArithOp,Number),")"))))))),";",ExpressionStatement(CallExpression(VariableName,ArgList("(",Number,")"))),"}","$","{",ExpressionStatement(CallExpression(MemberExpression(VariableName,".",PropertyName),ArgList("(",ArrowFunction(ParamList(VariableDefinition),Arrow,BinaryExpression(MemberExpression(VariableName,".",PropertyName),CompareOp,String)),")"))),"}","$","{",ExpressionStatement(CallExpression(MemberExpression(VariableName,".",PropertyName),ArgList("(",ArrowFunction(ParamList(VariableDefinition),Arrow,ArrayExpression("[",SequenceExpression(MemberExpression(VariableName,".",PropertyName),",",CallExpression(MemberExpression(MemberExpression(VariableName,".",PropertyName),".",PropertyName),ArgList("(",ArrowFunction(ParamList(VariableDefinition),Arrow,MemberExpression(VariableName,".",PropertyName)),")"))),"]")),")"))),"}","$","{",ExpressionStatement(CallExpression(MemberExpression(CallExpression(MemberExpression(CallExpression(MemberExpression(CallExpression(MemberExpression(VariableName,".",PropertyName),ArgList("(",")")),".",PropertyName),ArgList("(",ArrowFunction(ParamList(VariableDefinition),Arrow,BinaryExpression(MemberExpression(VariableName,".",PropertyName),CompareOp,VariableName)),")")),".",PropertyName),ArgList("(",ArrowFunction(ParamList(VariableDefinition),Arrow,MemberExpression(VariableName,".",PropertyName)),")")),".",PropertyName),ArgList("(",")"))),"}")
 
 
 # Literals
@@ -210,9 +205,7 @@ false
 null
 1
 -10
-\${1}
-\#{1}
 
 ==>
 
-Script()
+Script(BooleanLiteral,BooleanLiteral,null,Number,Number)
