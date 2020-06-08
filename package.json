@@ -1,0 +1,35 @@
+{
+  "name": "lezer-el",
+  "version": "0.0.0",
+  "description": "Lezer-based EL grammar",
+  "main": "dist/index.cjs",
+  "type": "module",
+  "exports": {
+    "import": "./dist/index.es.js",
+    "require": "./dist/index.cjs"
+  },
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "author": "Nico Rehwaldt <https://github.com/nikku>",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^8.0.1",
+    "lezer-generator": "^0.8.4",
+    "mocha": "^7.1.1",
+    "rollup": "^2.15.0"
+  },
+  "dependencies": {
+    "lezer": "^0.8.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nikku/lezer-el.git"
+  },
+  "scripts": {
+    "build": "lezer-generator src/el.grammar -o src/parser && rollup -c",
+    "build-debug": "lezer-generator src/el.grammar --names -o src/parser && rollup -c",
+    "prepare": "npm run build",
+    "test": "mocha test/test-*.js",
+    "all": "npm run build && npm test"
+  }
+}
